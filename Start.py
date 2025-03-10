@@ -42,12 +42,13 @@ if __name__ == "__main__":
         )
         st.write(
             "Below is a list of features I intend to add:"
-            "\n- Add complete logging for application to better diagnose bugs."
+            "\n- Complete logging for application to better diagnose bugs."
             "\n- Prevent the submit point form from resetting if an error is encountered."
             "\n- Show the results of previous sets on the scoreboard."
             "\n- A back button to undo the latest point."
             "\n- The ability to edit the scores."
             "\n- Additional/Improved statistics & analysis."
+            "\n- Ability to display both player's statistics/analysis side-by-side."
         )
 
     with st.container():
