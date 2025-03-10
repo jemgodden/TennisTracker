@@ -28,23 +28,32 @@ if __name__ == "__main__":
     with st.container():
         st.header("About")
         st.write(
-            "This app is used to track the score of a tennis match, as well as some accompanying statistics and "
-            "analysis of both the players and their actions during the match."
+            "This app is used to track the score of a singles tennis match, and display some accompanying statistics and analysis of both player's actions during the match.\n"
+        )
+        st.write(
+            "It originated as a fun way to help track my friend's tennis matches.\n "
+            "The hope is that this app can be used by coaches to help their coachees identify strengths and weaknesses in their game."
         )
 
     with st.container():
-        st.header("History")
+        st.header("Future")
         st.write(
-            "The purpose of this app originated as a fun way to help track my friend's tennis matches.\n"
+            "The app is currently in it's mvp (minimum viable product) stage, including just the basic features to make it useful to users. In the future I hope to build it out to make it as complete and as useful as possible.\n"
         )
         st.write(
-            "Previously I would just write down the scores and stats by hand on a notepad. "
-            "Eventually I decided to digitise this, which made things much easier. "
-            "This allowed for more detailed and useful options and analysis to be added.\n"
+            "Below is a list of features I intend to add:"
+            "\n- Prevent the submit point form from resetting if an error is encountered."
+            "\n- Show the results of previous sets on the scoreboard."
+            "\n- A back button to undo the latest point."
+            "\n- The ability to edit the scores."
+            "\n- Additional statistics & analysis."
         )
+
+    with st.container():
+        st.header("Contact")
         st.write(
-            "The hope is that this app can be used by coaches to help their coachees identify their strengths and "
-            "weaknesses in their game."
+            "If you have any feature requests/suggestions or encounter any bugs, please contact me at <jemgodden@gmail.com>.\n "
+            "Please include all input steps when reporting a bug so it can be recreated and diagnosed, thanks."
         )
 
     with st.container():
