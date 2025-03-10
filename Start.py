@@ -28,11 +28,11 @@ if __name__ == "__main__":
     with st.container():
         st.header("About")
         st.write(
-            "This app is used to track the score of a singles tennis match, and display some accompanying statistics and analysis of both player's actions during the match.\n"
+            "This application is intended to be used by amateur tennis players and coaches to track the score of a singles tennis match, and display some accompanying statistics and analysis of both players' actions during the match.\n"
         )
         st.write(
             "It originated as a fun way to help track my friend's tennis matches.\n "
-            "The hope is that this app can be used by coaches to help their coachees identify strengths and weaknesses in their game."
+            "The hope is that it can be used to identify strengths and weaknesses in a player's game and help giver areas to focus on or adapt during a match."
         )
 
     with st.container():
@@ -42,11 +42,12 @@ if __name__ == "__main__":
         )
         st.write(
             "Below is a list of features I intend to add:"
+            "\n- Add complete logging for application to better diagnose bugs."
             "\n- Prevent the submit point form from resetting if an error is encountered."
             "\n- Show the results of previous sets on the scoreboard."
             "\n- A back button to undo the latest point."
             "\n- The ability to edit the scores."
-            "\n- Additional statistics & analysis."
+            "\n- Additional/Improved statistics & analysis."
         )
 
     with st.container():
