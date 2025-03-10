@@ -7,6 +7,7 @@ import numpy as np
 from src.utils import *
 
 
+plt.style.use('dark_background')
 np.seterr(divide='ignore', invalid='ignore')
 
 
@@ -34,29 +35,28 @@ if __name__ == "__main__":
         st.stop()
 
     with st.container():
-        st.header("Set Filter")
+        st.header("Overview")
 
-        set_filter = st.pills(
-            "Select All Sets To Show Data For",
+        overview_match_data = st.session_state['match_data']
+
+        overview_set_filter = st.pills(
+            "Select All Sets To Show Statistics For",
             options=st.session_state['match_data'].set_id.unique(),
             selection_mode="multi",
             default=st.session_state['match_data'].set_id.unique(),
-            key='set_filter',
+            key='overview_set_filter',
         )
-        match_data = st.session_state['match_data'][st.session_state['match_data']['set_id'].isin(set_filter)]
+        overview_match_data = overview_match_data[overview_match_data['set_id'].isin(overview_set_filter)]
 
-    with st.container():
-        st.header("Overview")
-
-        left_title, middle_title, right_title = st.columns(3)
-        left_title.markdown(f"<h3 style='text-align: center;'>{st.session_state['player1_name']}</h3>", unsafe_allow_html=True)
-        middle_title.markdown(f"<h3 style='text-align: center;'>VS</h3>", unsafe_allow_html=True)
-        right_title.markdown(f"<h3 style='text-align: center;'>{st.session_state['player2_name']}</h3>", unsafe_allow_html=True)
+        overview_title_left, overview_title_middle, overview_title_right = st.columns(3)
+        overview_title_left.markdown(f"<h3 style='text-align: center;'>{st.session_state['player1_name']}</h3>", unsafe_allow_html=True)
+        overview_title_middle.markdown(f"<h3 style='text-align: center;'>VS</h3>", unsafe_allow_html=True)
+        overview_title_right.markdown(f"<h3 style='text-align: center;'>{st.session_state['player2_name']}</h3>", unsafe_allow_html=True)
         st.divider()
 
-        left_body, middle_body, right_body = st.columns(3)
+        overview_body_left, overview_body_middle, overview_body_right = st.columns(3)
 
-        def add_player_data(player: int) -> dict[str, pd.DataFrame]:
+        def add_player_data(player: int, match_data: pd.DataFrame) -> dict[str, pd.DataFrame]:
             data = {
                 'points_won': match_data[(match_data.winner == player)],
                 'points_lost': match_data[(match_data.winner == other_player(player))],
@@ -68,33 +68,34 @@ if __name__ == "__main__":
                 'net_approach_points': match_data[(match_data.net_approach == True)],
             }
 
-            data['aces'] = data['serves'][(match_data.serve == Serve.ACE.value)]
-            data['first_serves'] = data['serves'][(match_data.serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
-            data['double_faults'] = data['serves'][(match_data.serve == Serve.DOUBLE_FAULT.value)]
+            data['aces'] = data['serves'][(data['serves'].serve == Serve.ACE.value)]
+            data['first_serves'] = data['serves'][(data['serves'].serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
+            data['second_serves'] = data['serves'][(data['serves'].serve == Serve.SECOND_SERVE.value)]
+            data['double_faults'] = data['serves'][(data['serves'].serve == Serve.DOUBLE_FAULT.value)]
 
-            data['serve_points_won'] = data['points_won'][(match_data.serve == player)]
-            data['first_serve_points_won'] = data['serve_points_won'][(match_data.serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
-            data['second_serve_points_won'] = data['serve_points_won'][(match_data.serve == Serve.DOUBLE_FAULT.value)]
+            data['serve_points_won'] = data['serves'][(data['serves'].winner == player)]
+            data['first_serve_points_won'] = data['serve_points_won'][(data['serve_points_won'].serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
+            data['second_serve_points_won'] = data['serve_points_won'][(data['serve_points_won'].serve == Serve.SECOND_SERVE.value)]
 
-            data['winners'] = data['points_won'][(match_data.serve == FinalShot.WINNER.value)]
-            data['errors'] = data['points_lost'][(match_data.serve == FinalShot.ERROR.value)]
-            data['unforced_errors'] = data['points_lost'][(match_data.serve == FinalShot.UNFORCED_ERROR.value)]
+            data['winners'] = data['points_won'][(data['points_won'].final_shot == FinalShot.WINNER.value)]
+            data['errors'] = data['points_lost'][(data['points_lost'].final_shot == FinalShot.ERROR.value)]
+            data['unforced_errors'] = data['points_lost'][(data['points_lost'].final_shot == FinalShot.UNFORCED_ERROR.value)]
 
             data['final_shot'] = pd.concat([data['winners'], data['errors'], data['unforced_errors']])
 
-            data['net_approach_points_won'] = data['points_won'][(match_data.net_approach == True)]
+            data['net_approach_points_won'] = data['points_won'][(data['points_won'].net_approach == True)]
 
             return data
 
         player_data = {
-            Players.PLAYER_1.value: add_player_data(Players.PLAYER_1.value),
-            Players.PLAYER_2.value: add_player_data(Players.PLAYER_2.value)
+            Players.PLAYER_1.value: add_player_data(Players.PLAYER_1.value, overview_match_data),
+            Players.PLAYER_2.value: add_player_data(Players.PLAYER_2.value, overview_match_data)
         }
 
         def add_stat(title: str, player1_val: int or float, player2_val: int or float, end_str: str=""):
-            left_body.markdown(f"<h6 style='text-align: center;'>{player1_val}{end_str}</h6>", unsafe_allow_html=True)
-            middle_body.markdown(f"<h6 style='text-align: center;'>{title}</h6>", unsafe_allow_html=True)
-            right_body.markdown(f"<h6 style='text-align: center;'>{player2_val}{end_str}</h6>", unsafe_allow_html=True)
+            overview_body_left.markdown(f"<h6 style='text-align: center;'>{player1_val}{end_str}</h6>", unsafe_allow_html=True)
+            overview_body_middle.markdown(f"<h6 style='text-align: center;'>{title}</h6>", unsafe_allow_html=True)
+            overview_body_right.markdown(f"<h6 style='text-align: center;'>{player2_val}{end_str}</h6>", unsafe_allow_html=True)
 
         add_stat(
             "Points Won",
@@ -123,15 +124,15 @@ if __name__ == "__main__":
 
         add_stat(
             "First Serve Win %",
-            ((player_data[Players.PLAYER_1.value]['first_serve_points_won'].shape[0] / player_data[Players.PLAYER_1.value]['serves'].shape[0]) * 100) if player_data[Players.PLAYER_1.value]['serves'].shape[0] > 0 else 0,
-            ((player_data[Players.PLAYER_2.value]['first_serve_points_won'].shape[0] / player_data[Players.PLAYER_2.value]['serves'].shape[0]) * 100) if player_data[Players.PLAYER_2.value]['serves'].shape[0] > 0 else 0,
+            ((player_data[Players.PLAYER_1.value]['first_serve_points_won'].shape[0] / player_data[Players.PLAYER_1.value]['first_serves'].shape[0]) * 100) if player_data[Players.PLAYER_1.value]['first_serves'].shape[0] > 0 else 0,
+            ((player_data[Players.PLAYER_2.value]['first_serve_points_won'].shape[0] / player_data[Players.PLAYER_2.value]['first_serves'].shape[0]) * 100) if player_data[Players.PLAYER_2.value]['first_serves'].shape[0] > 0 else 0,
             "%"
         )
 
         add_stat(
             "Second Serve Win %",
-            ((player_data[Players.PLAYER_1.value]['second_serve_points_won'].shape[0] / player_data[Players.PLAYER_1.value]['serves'].shape[0]) * 100) if player_data[Players.PLAYER_1.value]['serves'].shape[0] > 0 else 0,
-            ((player_data[Players.PLAYER_2.value]['second_serve_points_won'].shape[0] / player_data[Players.PLAYER_2.value]['serves'].shape[0]) * 100) if player_data[Players.PLAYER_2.value]['serves'].shape[0] > 0 else 0,
+            ((player_data[Players.PLAYER_1.value]['second_serve_points_won'].shape[0] / player_data[Players.PLAYER_1.value]['second_serves'].shape[0]) * 100) if player_data[Players.PLAYER_1.value]['second_serves'].shape[0] > 0 else 0,
+            ((player_data[Players.PLAYER_2.value]['second_serve_points_won'].shape[0] / player_data[Players.PLAYER_2.value]['second_serves'].shape[0]) * 100) if player_data[Players.PLAYER_2.value]['second_serves'].shape[0] > 0 else 0,
             "%"
         )
 
@@ -162,109 +163,81 @@ if __name__ == "__main__":
             "%"
         )
 
-    # with st.container():
-    #     st.header("Serve")
-    #
-    #     try:
-    #         fig, (ax1, ax2) = plt.subplots(1, 2)
-    #
-    #         p1_serve_data = player_data[Players.PLAYER_1.value]['serves']
-    #         p1_serve_type_data = []
-    #         p1_serve_type_labels = []
-    #         for serve_type in ServeType:
-    #             count = p1_serve_data[p1_serve_data.serve_type == serve_type.value].shape[0]
-    #             if count > 0:
-    #                 p1_serve_type_data.append(count)
-    #                 p1_serve_type_labels.append(serve_type.name)
-    #
-    #         ax1.pie(
-    #             p1_serve_type_data,
-    #             explode=[0.1 for _ in p1_serve_type_data],
-    #             labels=p1_serve_type_labels,
-    #             # colors=,
-    #             autopct='%1.1f%%',
-    #             shadow=True,
-    #             startangle=90
-    #         )
-    #         ax1.axis('equal')
-    #
-    #         p2_serve_data = player_data[Players.PLAYER_2.value]['serves']
-    #         p2_serve_type_data = []
-    #         p2_serve_type_labels = []
-    #         for serve_type in ServeType:
-    #             count = p2_serve_data[p2_serve_data.serve_type == serve_type.value].shape[0]
-    #             if count > 0:
-    #                 p2_serve_type_data.append(count)
-    #                 p2_serve_type_labels.append(serve_type.name)
-    #
-    #         ax2.pie(
-    #             p2_serve_type_data,
-    #             explode=[0.1 for _ in p2_serve_type_data],
-    #             labels=p2_serve_type_labels,
-    #             autopct='%1.1f%%',
-    #             shadow=True,
-    #             startangle=90
-    #         )
-    #         ax2.axis('equal')
-    #
-    #         st.pyplot(fig)
-    #     except RuntimeError:
-    #         pass
-
     with st.container():
-        st.header("Rally Length")
+        st.header("Analysis")
 
-        rl_x_labels = ("0", "1-4", "5-8", "9+")
-        rl_p1_serves_data = player_data[Players.PLAYER_1.value]['serves']
-        rl_p1_data = [rl_p1_serves_data[rl_p1_serves_data.rally_length == enum.value].shape[0] for enum in RallyLength]
-        rl_p2_serves_data = player_data[Players.PLAYER_2.value]['serves']
-        rl_p2_data = [rl_p2_serves_data[rl_p2_serves_data.rally_length == enum.value].shape[0] for enum in RallyLength]
-        rl_data = {
-            st.session_state['player1_name']: rl_p1_data,
-            st.session_state['player2_name']: rl_p2_data,
+        analysis_match_data = st.session_state['match_data']
+
+        analysis_filter_left, analysis_filter_right = st.columns(2)
+
+        player_map = {
+            Players.PLAYER_1.value: st.session_state['player1_name'],
+            Players.PLAYER_2.value: st.session_state['player2_name'],
         }
-
-        rl_fig, rl_ax = plt.subplots()
-
-        rl_x = np.arange(len(rl_x_labels))  # the label locations
-        rl_width = 0.25  # width of the bars
-        rl_multiplier = 0
-
-        for attribute, measurement in rl_data.items():
-            offset = rl_width * rl_multiplier
-            rects = rl_ax.bar(rl_x + offset, measurement, rl_width, label=attribute)
-            rl_ax.bar_label(rects, padding=3)
-            rl_multiplier += 1
-
-        rl_ax.set_ylabel('Count')
-        rl_ax.set_xticks(rl_x + rl_width, rl_x_labels)
-        rl_ax.legend(loc='upper left', ncols=2)
-
-        st.pyplot(rl_fig)
-
-        rl1_player = st.selectbox(
-            "Select Serving Player",
-            (
-                st.session_state['player1_name'],
-                st.session_state['player2_name']
-            )
+        analysis_player_filter = analysis_filter_left.selectbox(
+            "Select Player To Show Analysis For",
+            options=player_map.keys(),
+            format_func=lambda val: player_map[val],
+            key='analysis_player_filter',
         )
-        rl1_player_val = Players.PLAYER_1.value if rl1_player == st.session_state['player1_name'] else Players.PLAYER_2.value
 
-        rl1_serves_data = match_data[match_data.server == rl1_player_val]
-        rl1_data = [rl1_serves_data[rl1_serves_data.rally_length == enum.value].shape[0] for enum in RallyLength]
+        analysis_set_filter = analysis_filter_right.pills(
+            "Select All Sets To Show Analysis For",
+            options=st.session_state['match_data'].set_id.unique(),
+            selection_mode="multi",
+            default=st.session_state['match_data'].set_id.unique(),
+            key='analysis_set_filter',
+        )
+        analysis_match_data = analysis_match_data[analysis_match_data['set_id'].isin(analysis_set_filter)]
 
-        rl1_fig, rl1_ax = plt.subplots()
+        with st.container():
+            st.subheader("Serve")
 
-        rl1_ax.bar(("0", "1-4", "5-8", "9+"), rl1_data)
+        with st.container():
+            st.subheader("Net")
 
-        st.pyplot(rl1_fig)
+            try:
+                net_x_labels = ("Aggressive", "Forced")
 
-    with st.container():
-        st.header("Net")
+                net_server_data = analysis_match_data[analysis_match_data['server'] == analysis_player_filter]
+                net_returner_data = analysis_match_data[analysis_match_data['server'] == other_player(analysis_player_filter)]
+                net_data = {
+                    'Server': [net_server_data[net_server_data.net_approach_type == enum.value].shape[0] for enum in NetApproachType],
+                    'Returner': [net_returner_data[net_server_data.net_approach_type == enum.value].shape[0] for enum in NetApproachType],
+                }
 
-    with st.container():
-        st.header("Winners & Errors")
+                net_fig, net_ax = plt.subplots()
+
+                net_x = np.arange(len(net_x_labels))  # the label locations
+                net_width = 0.25  # width of the bars
+                net_multiplier = 0
+
+                for attribute, measurement in net_data.items():
+                    offset = net_width * net_multiplier
+                    rects = net_ax.bar(net_x + offset, measurement, net_width, label=attribute)
+                    net_ax.bar_label(rects, padding=3)
+                    net_multiplier += 1
+
+                net_ax.set_xticks(net_x + net_width, net_x_labels)
+                net_ax.legend(loc='upper left', ncols=2)
+
+                st.pyplot(net_fig)
+            except:
+                st.warning("There is no relevant match data to analyse.")
+
+        with st.container():
+            st.subheader("Rally Length")
+
+            rally_length_server_data = analysis_match_data[analysis_match_data.server == analysis_player_filter]
+            rally_length_data = [rally_length_server_data[rally_length_server_data.rally_length == enum.value].shape[0] for enum in RallyLength]
+
+            rally_length_fig, rally_length_ax = plt.subplots()
+            rally_length_ax.bar(("0-1", "2-4", "5-8", "9+"), rally_length_data)
+
+            st.pyplot(rally_length_fig)
+
+        with st.container():
+            st.subheader("Winners & Errors")
 
     with st.container():
         st.write("###")
