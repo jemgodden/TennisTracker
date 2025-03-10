@@ -50,8 +50,8 @@ class NetApproachType(Enum):
 
 
 class RallyLength(Enum):
-    RL_0 = 0
-    RL_1_4 = 1
+    RL_0_1 = 0
+    RL_2_4 = 1
     RL_5_8 = 2
     RL_9_PLUS = 3
 
@@ -115,7 +115,7 @@ def create_backend_df() -> pd.DataFrame:
     return df
 
 
-def add_ace(session_state: dict, serve_target: int) -> None:
+def add_ace(session_state: dict, serve_target: int, serve_type: int = ServeType.FLAT.value) -> None:
     df = session_state['match_data']
     match = session_state['match']
 
@@ -134,12 +134,12 @@ def add_ace(session_state: dict, serve_target: int) -> None:
         True,
         False,
         Serve.ACE.value,
-        DEFAULT_VALUE,
+        serve_type,
         serve_target,
         False,
         DEFAULT_VALUE,
         DEFAULT_VALUE,
-        RallyLength.RL_1_4.value,
+        RallyLength.RL_0_1.value,
         FinalShot.WINNER.value,
         DEFAULT_VALUE,
         DEFAULT_VALUE
@@ -170,7 +170,7 @@ def add_double_fault(session_state: dict) -> None:
         False,
         DEFAULT_VALUE,
         DEFAULT_VALUE,
-        RallyLength.RL_0.value,
+        RallyLength.RL_0_1.value,
         DEFAULT_VALUE,
         DEFAULT_VALUE,
         DEFAULT_VALUE
