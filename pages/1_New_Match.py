@@ -222,8 +222,8 @@ if __name__ == "__main__":
             )
 
             rally_length_map = {
-                RallyLength.RL_0.value: "0",
-                RallyLength.RL_1_4.value: "1-4",
+                RallyLength.RL_0_1.value: "0-1",
+                RallyLength.RL_2_4.value: "2-4",
                 RallyLength.RL_5_8.value: "5-8",
                 RallyLength.RL_9_PLUS.value: "9+",
             }
