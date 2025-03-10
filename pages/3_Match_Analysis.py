@@ -193,8 +193,30 @@ if __name__ == "__main__":
         with st.container():
             st.subheader("Serve")
 
+            # TODO: Breakdown by serve type.
+            # TODO: Breakdown by serve target.
+            try:
+                serve_data = analysis_match_data[analysis_match_data['server'] == analysis_player_filter]
+
+                serve_fig, serve_ax = plt.subplots()
+
+                serve_ax.pie(
+                    [serve_data[serve_data['serve'] == enum.value].shape[0] for enum in Serve],
+                    explode=(0.1, 0.1, 0.1, 0.1),
+                    labels=("Ace", "First Serve", "Second Serve", "Double Fault"),
+                    autopct='%1.1f%%',
+                    shadow=True,
+                    startangle=90
+                )
+
+                st.pyplot(serve_fig)
+            except:
+                st.warning("There is no relevant match data to analyse.")
+
         with st.container():
             st.subheader("Net")
+
+            # TODO: Breakdown by percentage of service points that go to net.
 
             try:
                 net_x_labels = ("Aggressive", "Forced")
@@ -209,17 +231,17 @@ if __name__ == "__main__":
                 net_fig, net_ax = plt.subplots()
 
                 net_x = np.arange(len(net_x_labels))  # the label locations
-                net_width = 0.25  # width of the bars
+                net_width = 0.4  # width of the bars
                 net_multiplier = 0
 
-                for attribute, measurement in net_data.items():
-                    offset = net_width * net_multiplier
-                    rects = net_ax.bar(net_x + offset, measurement, net_width, label=attribute)
-                    net_ax.bar_label(rects, padding=3)
+                for net_attribute, net_measurement in net_data.items():
+                    net_offset = net_width * net_multiplier
+                    net_rects = net_ax.bar(net_x + net_offset, net_measurement, net_width, label=net_attribute)
+                    net_ax.bar_label(net_rects, padding=3)
                     net_multiplier += 1
 
-                net_ax.set_xticks(net_x + net_width, net_x_labels)
-                net_ax.legend(loc='upper left', ncols=2)
+                net_ax.set_xticks(net_x + (net_width / 2), net_x_labels)
+                net_ax.legend(loc='upper right')
 
                 st.pyplot(net_fig)
             except:
@@ -238,6 +260,49 @@ if __name__ == "__main__":
 
         with st.container():
             st.subheader("Winners & Errors")
+
+            # TODO: Breakdown by final shot type.
+
+            try:
+                fs_x_labels = ("Winner", "Error", "Unforced Error")
+
+                fs_point_winner_data = analysis_match_data[analysis_match_data['winner'] == analysis_player_filter]
+                fs_winner_data = fs_point_winner_data[fs_point_winner_data['final_shot'] == FinalShot.WINNER.value]
+                fs_point_loser_data = analysis_match_data[analysis_match_data['winner'] == other_player(analysis_player_filter)]
+                fs_error_data = fs_point_loser_data[fs_point_loser_data['final_shot'] == FinalShot.ERROR.value]
+                fs_unforced_error_data = fs_point_loser_data[fs_point_loser_data['final_shot'] == FinalShot.UNFORCED_ERROR.value]
+
+                fs_data = {
+                    'Forehand': [
+                        fs_winner_data[fs_winner_data['final_shot_hand'] == FinalShotHand.FOREHAND.value].shape[0],
+                        fs_error_data[fs_error_data['final_shot_hand'] == FinalShotHand.FOREHAND.value].shape[0],
+                        fs_unforced_error_data[fs_unforced_error_data['final_shot_hand'] == FinalShotHand.FOREHAND.value].shape[0],
+                    ],
+                    'Backhand': [
+                        fs_winner_data[fs_winner_data['final_shot_hand'] == FinalShotHand.BACKHAND.value].shape[0],
+                        fs_error_data[fs_error_data['final_shot_hand'] == FinalShotHand.BACKHAND.value].shape[0],
+                        fs_unforced_error_data[fs_unforced_error_data['final_shot_hand'] == FinalShotHand.BACKHAND.value].shape[0],
+                    ],
+                }
+
+                fs_fig, fs_ax = plt.subplots()
+
+                fs_x = np.arange(len(fs_x_labels))  # the label locations
+                fs_width = 0.4  # width of the bars
+                fs_multiplier = 0
+
+                for fs_attribute, fs_measurement in fs_data.items():
+                    fs_offset = fs_width * fs_multiplier
+                    fs_rects = fs_ax.bar(fs_x + fs_offset, fs_measurement, fs_width, label=fs_attribute)
+                    fs_ax.bar_label(fs_rects, padding=3)
+                    net_multiplier += 1
+
+                fs_ax.set_xticks(fs_x + (fs_width / 2), fs_x_labels)
+                fs_ax.legend(loc='upper right')
+
+                st.pyplot(fs_fig)
+            except:
+                st.warning("There is no relevant match data to analyse.")
 
     with st.container():
         st.write("###")
