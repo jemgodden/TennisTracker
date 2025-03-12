@@ -72,7 +72,7 @@ class FinalShotType(Enum):
     DRIVE = 0
     VOLLEY = 1
     SMASH = 2
-    DROPSHOT = 3
+    DROP_SHOT = 3
     LOB = 4
     OTHER = 5
 

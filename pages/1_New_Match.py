@@ -265,7 +265,7 @@ if __name__ == "__main__":
                 FinalShotType.DRIVE.value: "Drive",
                 FinalShotType.VOLLEY.value: "Volley",
                 FinalShotType.SMASH.value: "Smash",
-                FinalShotType.DROPSHOT.value: "Dropshot",
+                FinalShotType.DROP_SHOT.value: "Drop Shot",
                 FinalShotType.LOB.value: "Lob",
                 FinalShotType.OTHER.value: "Other",
             }
