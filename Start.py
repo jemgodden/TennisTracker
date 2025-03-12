@@ -5,8 +5,15 @@ from src.utils import *
 from src.tennis import Match
 
 
+# Application page - 'Start':
+# Generate initial session state variables upon start-up.
+# Include general information about the application as well as contact details for bugs and features.
+
+
 if __name__ == "__main__":
 
+    # Create session state variables to be carried through app if not already existing.
+    # This is the first page loaded, so variables should only be created on initial app load.
     if 'match' not in st.session_state:
         st.session_state['match'] = Match()
     if 'match_data' not in st.session_state:
@@ -25,20 +32,29 @@ if __name__ == "__main__":
 
     st.title("Welcome!")
 
+    # Include general information about the application
+
     with st.container():
         st.header("About")
         st.write(
-            "This application is intended to be used by amateur tennis players and coaches to track the score of a singles tennis match, and display some accompanying statistics and analysis of both players' actions during the match.\n"
-        )
-        st.write(
-            "It originated as a fun way to help track my friend's tennis matches.\n "
+            "This application is intended to be used by amateur tennis players and coaches to track the score of a singles tennis match, and display some accompanying statistics and analysis of both players' actions during the match.  \n"
             "The hope is that it can be used to identify strengths and weaknesses in a player's game and help giver areas to focus on or adapt during a match."
+        )
+
+    with st.container():
+        st.header("Usage")
+        st.write(
+            "You can start recording data for a match by navigating to the 'New Match' page, using either the sidebar or buttons at the bottom of the page.  \n"
+            "On that page you can set the match parameters, add points to the match, and save the match data to a file for later analysis.  \n"
+            "If you have already recorded a match using this application and would like to analyse the data for it, you can navigate to the 'Load Match' page and upload the file.  \n"
+            "Once have uploaded a match file, or are recording a currently ongoing match, you can access the statistics and analysis for the match on the 'Match Analysis' page. "
+            "There are various filters on this page for what aspect you would like to analyse."
         )
 
     with st.container():
         st.header("Future")
         st.write(
-            "The app is currently in it's mvp (minimum viable product) stage, including just the basic features to make it useful to users. In the future I hope to build it out to make it as complete and as useful as possible.\n"
+            "The app is currently in it's mvp (minimum viable product) stage, including just the basic features to make it useful to users. In the future I hope to build it out to make it as complete and as useful as possible.  \n"
         )
         st.write(
             "Below is a list of features I intend to add:"
@@ -54,8 +70,8 @@ if __name__ == "__main__":
     with st.container():
         st.header("Contact")
         st.write(
-            "If you have any feature requests/suggestions or encounter any bugs, please contact me at <jemgodden@gmail.com>.\n "
-            "Please include all input steps when reporting a bug so it can be recreated and diagnosed, thanks."
+            "If you have any feature requests/suggestions or encounter any bugs, please contact me at <jemgodden@gmail.com>.  \n"
+            "Please include all input steps when reporting a bug so it can be recreated and diagnosed."
         )
 
     with st.container():

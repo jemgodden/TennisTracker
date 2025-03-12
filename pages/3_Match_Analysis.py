@@ -11,6 +11,11 @@ plt.style.use('dark_background')
 np.seterr(divide='ignore', invalid='ignore')
 
 
+# Application page - 'Match Analysis':
+# Show summary statistics for the current match.
+# Let the user visualise information about the players performance in the current match, using filters to see desired data.
+
+
 if __name__ == "__main__":
 
     st.set_page_config(

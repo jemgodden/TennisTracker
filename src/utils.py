@@ -3,6 +3,11 @@ from datetime import datetime, timezone
 from enum import Enum
 
 
+"""
+This file contains a number of utility functions used across both the tennis scoring backend, and throughout the application frontend.
+"""
+
+
 DEFAULT_VALUE = None
 
 
@@ -78,6 +83,12 @@ class FinalShotType(Enum):
 
 
 def other_player(input_player: int):
+    """
+    Returns the integer value for the other player to the given input player.
+
+    :param input_player: integer value for current player.
+    :return: integer value for other player.
+    """
     # return Players.PLAYER_1.value if input_player == Players.PLAYER_2.value else Players.PLAYER_2.value
     return (input_player % 2) + 1
 
@@ -116,6 +127,13 @@ def create_backend_df() -> pd.DataFrame:
 
 
 def add_ace(session_state: dict, serve_target: int, serve_type: int = ServeType.FLAT.value) -> None:
+    """
+    Quickly add an ace to the backend data.
+
+    :param session_state: streamlit session state dictionary.
+    :param serve_target: ServeTarget enum value.
+    :param serve_type: ServeType enum value, defaulted to FLAT.
+    """
     df = session_state['match_data']
     match = session_state['match']
 
@@ -147,6 +165,11 @@ def add_ace(session_state: dict, serve_target: int, serve_type: int = ServeType.
 
 
 def add_double_fault(session_state: dict) -> None:
+    """
+    Quickly add a double fault to the backend data.
+
+    :param session_state: streamlit session state dictionary.
+    """
     df = session_state['match_data']
     match = session_state['match']
 
@@ -178,6 +201,11 @@ def add_double_fault(session_state: dict) -> None:
 
 
 def add_point(session_state: dict) -> None:
+    """
+    Add a point to the backend data using information the streamlit session state dictionary.
+
+    :param session_state: streamlit session state dictionary.
+    """
     if session_state['winner'] is None:
         raise ValueError("No winner was selected for the point so it was not added to the data.")
 

@@ -7,6 +7,13 @@ from src.utils import *
 from src.tennis import Match, MatchSections
 
 
+# Application page - 'New Match':
+# Let user set match parameters for a new match and generate appropriate session state variables.
+# Display the scoreboard for the current match.
+# Let the user add points to the match using the current point form, which sends data to the backend and updates scoreboard.
+# Let the user save the match data csv file to be used and analysed later.
+
+
 if __name__ == "__main__":
 
     st.set_page_config(
@@ -28,24 +35,22 @@ if __name__ == "__main__":
             """
         )
 
+        st.caption("Note that changing the match settings will reset any previously entered match, point or scoreboard data.  \nConsider saving the file first.")
+
         if st.toggle("Open Match Settings"):
             player1_name = st.text_input(
                 "Player 1 Name",
                 placeholder="Player 1",
-                max_chars=25
+                max_chars=25,
+                key='player1_name',  # key parameter used to set the output of this widget as a session state variable.
             )
-            if 'player1_name' in st.session_state:
-                st.session_state.pop('player1_name')
-            st.session_state['player1_name'] = player1_name
 
             player2_name = st.text_input(
                 "Player 2 Name",
                 placeholder="Player 2",
-                max_chars=25
+                max_chars=25,
+                key='player2_name',
             )
-            if 'player2_name' in st.session_state:
-                st.session_state.pop('player2_name')
-            st.session_state['player2_name'] = player2_name
 
             server = st.pills(
                 "Server (Defaults to Player 1)",
@@ -85,8 +90,6 @@ if __name__ == "__main__":
             )
 
             if st.button("Confirm Match Details"):
-                if 'match' in st.session_state:
-                    st.session_state.pop('match')
                 st.session_state['match'] = Match(
                     player1_name=player1_name if player1_name else 'Player 1',
                     player2_name=player2_name if player2_name else 'Player 2',
@@ -97,11 +100,7 @@ if __name__ == "__main__":
                     final_set_tiebreak=final_set_tiebreak,
                     set_tiebreak_to=final_set_tiebreak_to
                 )
-                if 'match_data' in st.session_state:
-                    st.session_state.pop('match_data')
                 st.session_state['match_data'] = create_backend_df()
-                if 'match_datetime' in st.session_state:
-                    st.session_state.pop('match_datetime')
                 st.session_state['match_datetime'] = datetime.now(timezone.utc)
 
     with st.container():
@@ -314,9 +313,11 @@ if __name__ == "__main__":
         st.download_button(
             label="Download Match Data to CSV",
             data=st.session_state['match_data'].to_csv(index=False).encode("utf-8"),
+            # Specific file name used to populate match information when loading the file.
+            # TODO: Look into adding meta data to the dataframe or file instead. Then give file naming options.
             file_name=f"{st.session_state['match'].player1_name.replace(' ', '_')}_vs_{st.session_state['match'].player2_name.replace(' ', '_')}-{datetime.now().strftime('%d%m%Y_%H:%M:%S')}.csv",
             mime="text/csv",
-            disabled=st.session_state['match_data'].empty
+            disabled=st.session_state['match_data'].empty  # Do not allow saving if no data has yet been inputted.
         )
 
     with st.container():
