@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime, timezone
-from enum import Enum
+from enum import Enum, auto
 
 
 """
@@ -19,8 +19,8 @@ class MatchSections(Enum):
 
 class Players(Enum):
     NONE = 0
-    PLAYER_1 = 1
-    PLAYER_2 = 2
+    PLAYER_1 = auto()
+    PLAYER_2 = auto()
 
 
 class Side(Enum):
@@ -75,8 +75,8 @@ class FinalShotHand(Enum):
 
 class FinalShotType(Enum):
     DRIVE = 0
-    VOLLEY = 1
-    SMASH = 2
+    SMASH = 1
+    VOLLEY = 2
     DROP_SHOT = 3
     LOB = 4
     OTHER = 5
@@ -96,7 +96,7 @@ def other_player(input_player: int):
 def create_backend_df() -> pd.DataFrame:
     df = pd.DataFrame(
         columns=[
-            'meta_datetime',
+            'point_datetime',
             'point_uuid',
             'set_id',
             'game_id',
@@ -121,6 +121,9 @@ def create_backend_df() -> pd.DataFrame:
             'final_shot_type',
             # 'final_shot_spin',
             # 'final_shot_target'
+            'meta_datetime',
+            'meta_player1_name',
+            'meta_player2_name',
         ]
     )
     return df
@@ -160,7 +163,10 @@ def add_ace(session_state: dict, serve_target: int, serve_type: int = ServeType.
         RallyLength.RL_0_1.value,
         FinalShot.WINNER.value,
         DEFAULT_VALUE,
-        DEFAULT_VALUE
+        DEFAULT_VALUE,
+        session_state['match_datetime'],
+        session_state['player1_name'],
+        session_state['player2_name'],
     ]
 
 
@@ -196,7 +202,10 @@ def add_double_fault(session_state: dict) -> None:
         RallyLength.RL_0_1.value,
         DEFAULT_VALUE,
         DEFAULT_VALUE,
-        DEFAULT_VALUE
+        DEFAULT_VALUE,
+        session_state['match_datetime'],
+        session_state['player1_name'],
+        session_state['player2_name'],
     ]
 
 
@@ -235,5 +244,40 @@ def add_point(session_state: dict) -> None:
         session_state['rally_length'],
         session_state['final_shot'],
         session_state['final_shot_hand'],
-        session_state['final_shot_type']
+        session_state['final_shot_type'],
+        session_state['match_datetime'],
+        session_state['player1_name'],
+        session_state['player2_name'],
     ]
+
+
+def add_player_data(player: int, match_data: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    data = {
+        'points_won': match_data[(match_data.winner == player)],
+        'points_lost': match_data[(match_data.winner == other_player(player))],
+        'match_points': match_data[(match_data.match_point == player)],
+        'set_points': match_data[(match_data.set_point == player)],
+        'break_points': match_data[(match_data.break_point == player)],
+        'serves': match_data[(match_data.server == player)],
+        'returns': match_data[(match_data.server == other_player(player))],
+        'net_approach_points': match_data[(match_data.net_approach == True)],
+    }
+
+    data['aces'] = data['serves'][(data['serves'].serve == Serve.ACE.value)]
+    data['first_serves'] = data['serves'][(data['serves'].serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
+    data['second_serves'] = data['serves'][(data['serves'].serve == Serve.SECOND_SERVE.value)]
+    data['double_faults'] = data['serves'][(data['serves'].serve == Serve.DOUBLE_FAULT.value)]
+
+    data['serve_points_won'] = data['serves'][(data['serves'].winner == player)]
+    data['first_serve_points_won'] = data['serve_points_won'][(data['serve_points_won'].serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
+    data['second_serve_points_won'] = data['serve_points_won'][(data['serve_points_won'].serve == Serve.SECOND_SERVE.value)]
+
+    data['winners'] = data['points_won'][(data['points_won'].final_shot == FinalShot.WINNER.value)]
+    data['errors'] = data['points_lost'][(data['points_lost'].final_shot == FinalShot.ERROR.value)]
+    data['unforced_errors'] = data['points_lost'][(data['points_lost'].final_shot == FinalShot.UNFORCED_ERROR.value)]
+
+    data['final_shot'] = pd.concat([data['winners'], data['errors'], data['unforced_errors']])
+
+    data['net_approach_points_won'] = data['points_won'][(data['points_won'].net_approach == True)]
+
+    return data

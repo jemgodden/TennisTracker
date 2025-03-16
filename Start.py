@@ -27,12 +27,14 @@ if __name__ == "__main__":
 
     st.set_page_config(
         page_title="Start",
+        page_icon=":information_source:",
+        layout='wide',
         # initial_sidebar_state="collapsed",
     )
 
-    st.title("Welcome!")
+    st.title("Welcome! :wave:")
 
-    # Include general information about the application
+    # State general information about the application's history, intended usage, and contact details for issues/ideas.
 
     with st.container():
         st.header("About")
@@ -44,10 +46,12 @@ if __name__ == "__main__":
     with st.container():
         st.header("Usage")
         st.write(
-            "You can start recording data for a match by navigating to the 'New Match' page, using either the sidebar or buttons at the bottom of the page.  \n"
-            "On that page you can set the match parameters, add points to the match, and save the match data to a file for later analysis.  \n"
-            "If you have already recorded a match using this application and would like to analyse the data for it, you can navigate to the 'Load Match' page and upload the file.  \n"
-            "Once have uploaded a match file, or are recording a currently ongoing match, you can access the statistics and analysis for the match on the 'Match Analysis' page. "
+            "If you want to start tracking a new match:  \n"
+            "- You can set the parameters for the match by navigating to the 'New Match' page.  \n"
+            "- You can add point data to the match by navigating to the 'Track Match' page. From this page you can save any populated information to a file, which can be loaded in later.  \n\n"
+            "If you want to load a previous match to analyse, or continue populating data for:  \n"
+            "- You can load in files previously created by this app by navigating to the 'Load Match' page.  \n\n"
+            "Once you have recorded data for a current or loaded match, you can access the statistics and analysis for it by navigating to the 'Analyse Match' page. "
             "There are various filters on this page for what aspect you would like to analyse."
         )
 
@@ -65,6 +69,7 @@ if __name__ == "__main__":
             "\n- The ability to edit the scores."
             "\n- Additional/Improved statistics & analysis."
             "\n- Ability to display both player's statistics/analysis side-by-side."
+            "\n- Create a full backend to analyse player data over multiple matches."
         )
 
     with st.container():
@@ -78,7 +83,7 @@ if __name__ == "__main__":
         st.write("###")
         st.divider()
         left, right = st.columns(2)
-        if left.button("Populate New Match"):
-            switch_page("New_Match")
+        if left.button("Create New Match"):
+            switch_page("New Match")
         if right.button("Load Previous Match"):
             switch_page("Load Match")
