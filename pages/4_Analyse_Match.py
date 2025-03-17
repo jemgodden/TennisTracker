@@ -418,16 +418,16 @@ if __name__ == "__main__":
                 fs_mbar_fig, fs_mbar_ax = plt.subplots(figsize=(6.4, 6.35))
 
                 fs_x = np.arange(len(fs_x_labels))  # the label locations
-                fs_width = 0.4  # width of the bars
+                fs_width = 0.25  # width of the bars
                 fs_multiplier = 0
 
                 for fs_attribute, fs_measurement in fs_mbar_data.items():
                     fs_offset = fs_width * fs_multiplier
                     fs_rects = fs_mbar_ax.bar(fs_x + fs_offset, fs_measurement, fs_width, label=fs_attribute)
                     fs_mbar_ax.bar_label(fs_rects, padding=3)
-                    net_multiplier += 1
+                    fs_multiplier += 1
 
-                fs_mbar_ax.set_xticks(fs_x + (fs_width / 2), fs_x_labels)
+                fs_mbar_ax.set_xticks(fs_x + fs_width, fs_x_labels)
                 fs_mbar_ax.legend(loc='upper right')
 
                 fs_analysis_left.pyplot(
