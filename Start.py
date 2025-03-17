@@ -36,14 +36,14 @@ if __name__ == "__main__":
 
     # State general information about the application's history, intended usage, and contact details for issues/ideas.
 
-    with st.container("About"):
+    with st.container(key="about"):
         st.header("About")
         st.write(
             "This application is intended to be used by amateur tennis players and coaches to track the score of a singles tennis match, and display some accompanying statistics and analysis of both players' actions during the match.  \n"
             "The hope is that it can be used to identify strengths and weaknesses in a player's game and help giver areas to focus on or adapt during a match."
         )
 
-    with st.container("Usage"):
+    with st.container(key="usage"):
         st.header("Usage")
         st.write(
             "If you want to start tracking a new match:  \n"
@@ -55,7 +55,7 @@ if __name__ == "__main__":
             "There are various filters on this page for what aspect you would like to analyse."
         )
 
-    with st.container("Future"):
+    with st.container(key="future"):
         st.header("Future")
         st.write(
             "The app is currently in it's mvp (minimum viable product) stage, including just the basic features to make it useful to users. In the future I hope to build it out to make it as complete and as useful as possible.  \n"
@@ -72,14 +72,14 @@ if __name__ == "__main__":
             "\n- Create a full backend to analyse player data over multiple matches."
         )
 
-    with st.container("Contact"):
+    with st.container(key="contact"):
         st.header("Contact")
         st.write(
             "If you have any feature requests/suggestions or encounter any bugs, please contact me at <jemgodden@gmail.com>.  \n"
             "Please include all input steps when reporting a bug so it can be recreated and diagnosed."
         )
 
-    with st.container("Page Navigation"):
+    with st.container(key="page_navigation"):
         st.write("###")
         st.divider()
         left, right = st.columns(2)

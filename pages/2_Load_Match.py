@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     st.title("Load a Previous Match :floppy_disk:")
 
-    with st.container("Upload Data"):
+    with st.container(key="upload_data"):
         st.header("Upload a File")
 
         uploaded_file = st.file_uploader(
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
         st.caption("Note that loading a file will overwrite any previous information added in the 'New Match' page.  \nConsider saving the file first.")
 
-    with st.container("Page Navigation"):
+    with st.container(key="page_navigation"):
         st.write("###")
         st.divider()
         left, right = st.columns(2)
