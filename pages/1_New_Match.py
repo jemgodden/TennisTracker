@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     st.title("Create a New Match :tennis:")
 
-    with st.container():
+    with st.container("New Match Settings"):
         st.header("Match Settings")
 
         st.write("The default match settings are the default options in the below inputs.")
@@ -100,7 +100,7 @@ if __name__ == "__main__":
                 )
                 st.session_state['match_data'] = create_backend_df()
 
-    with st.container():
+    with st.container("Page Navigation"):
         st.write("###")
         st.divider()
         if st.button("Track New Match"):

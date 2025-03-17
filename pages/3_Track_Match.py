@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     st.title("Track Current Match :memo:")
 
-    with st.container():
+    with st.container("Scoreboard"):
         st.header("Scoreboard")
 
         scores = st.session_state['match'].get_score()
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         scoreboard_df = scoreboard_df.set_index(scoreboard_df.columns[0])
         scoreboard = st.table(scoreboard_df)
 
-    with st.container():
+    with st.container("Point Form"):
         st.header("Current Point")
 
         left, middle, right = st.columns(3)
@@ -249,7 +249,7 @@ if __name__ == "__main__":
                     st.session_state['match'].add_point(winner)
                     st.rerun()
 
-    with st.container():
+    with st.container("Save Data"):
         st.header("Save Match")
 
         output_file_name = st.text_input(
@@ -265,7 +265,7 @@ if __name__ == "__main__":
             disabled=st.session_state['match_data'].empty  # Do not allow saving if no data has yet been inputted.
         )
 
-    with st.container():
+    with st.container("Page Navigation"):
         st.write("###")
         st.divider()
         if st.button("Analyse Current Match"):
