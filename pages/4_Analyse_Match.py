@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 
 from src.utils import *
@@ -339,6 +340,7 @@ if __name__ == "__main__":
                     net_multiplier += 1
 
                 net_bar_ax.set_xticks(net_x + (net_width / 2), net_x_labels)
+                net_bar_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
                 net_bar_ax.legend(loc='upper right')
 
                 net_analysis_right.pyplot(
@@ -358,12 +360,11 @@ if __name__ == "__main__":
             rally_length_server_data = analysis_match_data[analysis_match_data.server == analysis_player_filter]
             rally_length_data = [rally_length_server_data[rally_length_server_data.rally_length == enum.value].shape[0] for enum in RallyLength]
 
-            rally_length_fig = plt.figure()
-            rally_length_ax = rally_length_fig.add_axes((0.8, 0.8, 0.8, 0.8))
-
-            # rally_length_fig, rally_length_ax = plt.subplots()
+            rally_length_fig, rally_length_ax = plt.subplots()
 
             rally_length_ax.bar(("0-1", "2-4", "5-8", "9+"), rally_length_data)
+
+            rally_length_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
             rally_analysis_middle.pyplot(
                 rally_length_fig,
@@ -428,6 +429,7 @@ if __name__ == "__main__":
                     fs_multiplier += 1
 
                 fs_mbar_ax.set_xticks(fs_x + fs_width, fs_x_labels)
+                fs_mbar_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
                 fs_mbar_ax.legend(loc='upper right')
 
                 fs_analysis_left.pyplot(
@@ -473,6 +475,7 @@ if __name__ == "__main__":
                     p = fs_sbar_ax.bar(shot_types, vals, 0.75, label=label, bottom=base)
                     base = [sum(i) for i in zip(base, vals)]
 
+                fs_sbar_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
                 fs_sbar_ax.legend(loc="upper right")
 
                 fs_analysis_right.pyplot(
