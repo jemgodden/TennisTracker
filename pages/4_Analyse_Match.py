@@ -8,7 +8,6 @@ import numpy as np
 from src.utils import *
 
 
-plt.style.use('dark_background')
 np.seterr(divide='ignore', invalid='ignore')
 
 
@@ -185,7 +184,7 @@ if __name__ == "__main__":
                     autopct='%1.1f%%',
                     shadow=True,
                     startangle=90,
-                    colors=plt.cm.Pastel1.colors,
+                    colors=plt.cm.Set3.colors,
                 )
 
                 serve_analysis_left.pyplot(
@@ -208,7 +207,7 @@ if __name__ == "__main__":
                     key='serve_filter',
                 )
 
-                serve_hm_fig, serve_hm_ax = plt.subplots(figsize=(6.4, 4.0))
+                serve_hm_fig, serve_hm_ax = plt.subplots()
 
                 serve_hm_data = [[serve_data[(serve_data['serve'] == serve_filter) & (serve_data['serve_type'] == serve_type.value) & (serve_data['serve_target'] == serve_target.value)].shape[0] for serve_target in ServeTarget] for serve_type in ServeType]
                 serve_targets = ["Inside", "Body", "Outside", "Short"]
@@ -216,7 +215,7 @@ if __name__ == "__main__":
 
                 im = serve_hm_ax.imshow(
                     serve_hm_data,
-                    cmap='Wistia',
+                    cmap='YlGn',
                 )
 
                 serve_hm_ax.set_xticks(
@@ -257,10 +256,10 @@ if __name__ == "__main__":
             try:
                 rp_data = [
                     0,
-                    analysis_match_data[(analysis_match_data['server'] == other_player(analysis_player_filter)) & (analysis_match_data['net_approach'] == True)].shape[0],
-                    analysis_match_data[(analysis_match_data['server'] == analysis_player_filter) & (analysis_match_data['net_approach'] == True)].shape[0]
+                    analysis_match_data[(analysis_match_data['server'] == other_player(analysis_player_filter)) & (analysis_match_data['net_approach'] == True)].shape[0] * 100 / analysis_match_data[analysis_match_data['server'] == other_player(analysis_player_filter)].shape[0] if analysis_match_data[analysis_match_data['server'] == other_player(analysis_player_filter)].shape[0] > 0 else 0,
+                    analysis_match_data[(analysis_match_data['server'] == analysis_player_filter) & (analysis_match_data['net_approach'] == True)].shape[0] * 100 / analysis_match_data[analysis_match_data['server'] == analysis_player_filter].shape[0] if analysis_match_data[analysis_match_data['server'] == analysis_player_filter].shape[0] > 0 else 0
                 ]
-                # rp_data = [0, 23.6, 9.4]
+
                 rp_bg_data = [0, 1, 1]
                 rp_labels = ["", "Returner", "Server"]
 
@@ -292,11 +291,12 @@ if __name__ == "__main__":
                     verticalalignment='center',
                 )
 
+                rb_color_map = plt.cm.Set3.colors[:3][::-1]
                 for i in range(len(rp_data)):
                     net_rb_polar_ax.barh(
                         i,
                         rp_data[i]*2*np.pi/100,
-                        color=plt.cm.Pastel1.colors[i],
+                        color=rb_color_map[i],
                         label=rp_labels[i],
                     )
 
@@ -308,7 +308,9 @@ if __name__ == "__main__":
                     labelbottom=False,
                     labelleft=True,
                 )
-                net_rb_polar_ax.legend(loc='upper left')
+
+                handles, labels = net_rb_polar_ax.get_legend_handles_labels()
+                net_rb_polar_ax.legend(handles[::-1], labels[::-1], loc='upper left')
 
                 net_analysis_left.pyplot(
                     net_rb_fig,
@@ -327,7 +329,7 @@ if __name__ == "__main__":
 
                 net_x_labels = ("Aggressive", "Forced")
 
-                net_bar_fig, net_bar_ax = plt.subplots(figsize=(6.4, 6.8))
+                net_bar_fig, net_bar_ax = plt.subplots()
 
                 net_x = np.arange(len(net_x_labels))  # the label locations
                 net_width = 0.4  # width of the bars
@@ -362,7 +364,11 @@ if __name__ == "__main__":
 
             rally_length_fig, rally_length_ax = plt.subplots()
 
-            rally_length_ax.bar(("0-1", "2-4", "5-8", "9+"), rally_length_data)
+            rally_length_ax.bar(
+                ("0-1", "2-4", "5-8", "9+"),
+                rally_length_data,
+                color=plt.cm.Set3.colors,
+            )
 
             rally_length_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
@@ -416,7 +422,7 @@ if __name__ == "__main__":
                     ],
                 }
 
-                fs_mbar_fig, fs_mbar_ax = plt.subplots(figsize=(6.4, 6.35))
+                fs_mbar_fig, fs_mbar_ax = plt.subplots()
 
                 fs_x = np.arange(len(fs_x_labels))  # the label locations
                 fs_width = 0.25  # width of the bars
