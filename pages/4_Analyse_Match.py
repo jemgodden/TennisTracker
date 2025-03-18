@@ -188,6 +188,8 @@ if __name__ == "__main__":
                     colors=plt.cm.Set3.colors,
                 )
 
+                serve_pie_ax.set_title(f"Serve Percentages for {player_map[analysis_player_filter]}")
+
                 serve_analysis_left.pyplot(
                     serve_pie_fig,
                     facecolor='#0F1116',
@@ -198,7 +200,7 @@ if __name__ == "__main__":
             try:
                 serve_map = {enum.value: format_enum_name(enum.name) for enum in Serve}
                 serve_filter = serve_analysis_right.selectbox(
-                    "Select Serve",
+                    "Select Serve to Show on Heatmap",
                     options=serve_map.keys(),
                     format_func=lambda val: serve_map[val],
                     key='serve_filter',
@@ -237,6 +239,8 @@ if __name__ == "__main__":
                             va="center",
                             color="k",
                         )
+
+                serve_hm_ax.set_title(f"Serve Types & Targets by Serve for {player_map[analysis_player_filter]}")
 
                 serve_analysis_right.pyplot(
                     serve_hm_fig,
@@ -308,6 +312,7 @@ if __name__ == "__main__":
 
                 handles, labels = net_rb_polar_ax.get_legend_handles_labels()
                 net_rb_polar_ax.legend(handles[::-1], labels[::-1], loc='upper left')
+                net_rb_polar_ax.set_title(f"Net Approach by Service for {player_map[analysis_player_filter]}")
 
                 net_analysis_left.pyplot(
                     net_rb_fig,
@@ -341,6 +346,7 @@ if __name__ == "__main__":
                 net_bar_ax.set_xticks(net_x + (net_width / 2), net_x_labels)
                 net_bar_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
                 net_bar_ax.legend(loc='upper right')
+                net_bar_ax.set_title(f"Net Approach Counts by Type and Service for {player_map[analysis_player_filter]}")
 
                 net_analysis_right.pyplot(
                     net_bar_fig,
@@ -354,8 +360,6 @@ if __name__ == "__main__":
 
             rally_analysis_left, rally_analysis_middle, rally_analysis_right = st.columns([1, 3.5, 1])
 
-            rally_analysis_middle.write(f"Rally length of points when {player_map[analysis_player_filter]} is serving.")
-
             rally_length_server_data = analysis_match_data[analysis_match_data.server == analysis_player_filter]
             rally_length_data = [rally_length_server_data[rally_length_server_data.rally_length == enum.value].shape[0] for enum in RallyLength]
 
@@ -368,6 +372,7 @@ if __name__ == "__main__":
             )
 
             rally_length_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+            rally_length_ax.set_title(f"Count of Rally Lengths When {player_map[analysis_player_filter]} is Serving")
 
             rally_analysis_middle.pyplot(
                 rally_length_fig,
@@ -434,6 +439,7 @@ if __name__ == "__main__":
                 fs_mbar_ax.set_xticks(fs_x + fs_width, fs_x_labels)
                 fs_mbar_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
                 fs_mbar_ax.legend(loc='upper right')
+                fs_mbar_ax.set_title(f"Counts of Winners & Errors for {player_map[analysis_player_filter]}")
 
                 fs_analysis_left.pyplot(
                     fs_mbar_fig,
@@ -445,7 +451,7 @@ if __name__ == "__main__":
             try:
                 winerr_map = {enum.value: format_enum_name(enum.name) for enum in FinalShot}
                 winerr_filter = fs_analysis_right.selectbox(
-                    "Select Winner, Error, or Unforced Error",
+                    "Select Winners or Errors",
                     options=winerr_map.keys(),
                     format_func=lambda val: winerr_map[val],
                     key='winerr_filter',
@@ -469,6 +475,7 @@ if __name__ == "__main__":
 
                 fs_sbar_ax.yaxis.set_major_locator(MaxNLocator(integer=True))
                 fs_sbar_ax.legend(loc="upper right")
+                fs_sbar_ax.set_title(f"Count of Types of Winners & Errors by Shot for {player_map[analysis_player_filter]}")
 
                 fs_analysis_right.pyplot(
                     fs_sbar_fig,
