@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import streamlit as st
 
 from src.player import Player
 from src.utils import Players, MatchSections, other_player
@@ -68,7 +67,6 @@ class Game(ABC):
         elif winner == Players.PLAYER_2.value:
             self._add_player2_point()
         else:
-            st.write("Hello")
             raise ValueError(f"Winner value {winner} is invalid.")
 
         return self._check_win()
