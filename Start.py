@@ -19,11 +19,14 @@ if __name__ == "__main__":
     if 'match_data' not in st.session_state:
         st.session_state['match_data'] = create_backend_df()
     if 'player1_name' not in st.session_state:
-        st.session_state['player1_name'] = "Player 1"
+        st.session_state['player1_name'] = st.session_state['match'].player1_name
     if 'player2_name' not in st.session_state:
-        st.session_state['player2_name'] = "Player 2"
+        st.session_state['player2_name'] = st.session_state['match'].player2_name
     if 'match_datetime' not in st.session_state:
-        st.session_state['match_datetime'] = datetime.now()
+        st.session_state['match_datetime'] = datetime.now(timezone.utc)
+    if 'match_metadata' not in st.session_state:
+        st.session_state['match_metadata'] = st.session_state['match'].get_initial_inputs()
+        st.session_state['match_metadata']['datetime'] = st.session_state['match_datetime'].strftime('%Y-%m-%d %H:%M:%S')
 
     st.set_page_config(
         page_title="Start",

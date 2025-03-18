@@ -313,22 +313,24 @@ class Match:
             server: int=1,
             match_best_of: int=3,
             set_num_games: int=6,
-            set_tiebreak_to: int=10,
-            final_set_tiebreak: bool=False,
-            game_tiebreak_to: int=7
+            set_tiebreak_to: int=7,
+            match_tiebreak: bool=False,
+            match_tiebreak_to: int=10
     ):
         self._player1: Player = Player(player1_name)
         self._player2: Player = Player(player2_name)
 
         if server not in [Players.PLAYER_1.value, Players.PLAYER_2.value]:
             raise ValueError(f"Server value {server} is invalid.")
+        self._initial_server: int = server
         self._server: int = server
 
-        self._winning_num_sets = (match_best_of // 2) + 1
+        self._match_best_of: int = match_best_of
+        self._winning_num_sets: int = (match_best_of // 2) + 1
         self._set_num_games: int = set_num_games
         self._set_tiebreak_to: int = set_tiebreak_to
-        self._final_set_tiebreak: bool = final_set_tiebreak
-        self._game_tiebreak_to: int = game_tiebreak_to
+        self._match_tiebreak: bool = match_tiebreak
+        self._match_tiebreak_to: int = match_tiebreak_to
 
         self._player1_sets: int = 0
         self._player2_sets: int = 0
@@ -337,17 +339,17 @@ class Match:
         self._game_number: int = 1
         self._point_number: int = 1
 
-        if match_best_of == 1 and final_set_tiebreak:
+        if match_best_of == 1 and match_tiebreak:
             self._set: Set = TiebreakSet(
                 server=self.server,
                 num_games=set_num_games,
-                tiebreak_to=game_tiebreak_to
+                tiebreak_to=match_tiebreak_to
             )
         else:
             self._set: Set = RegularSet(
                 server=self.server,
                 num_games=set_num_games,
-                tiebreak_to=game_tiebreak_to
+                tiebreak_to=set_tiebreak_to
             )
 
     @property
@@ -357,6 +359,34 @@ class Match:
     @property
     def player2_name(self) -> str:
         return self._player2.name
+
+    @property
+    def initial_server(self) -> int:
+        return self._initial_server
+
+    @property
+    def match_best_of(self) -> int:
+        return self._match_best_of
+
+    @property
+    def winning_num_sets(self) -> int:
+        return self._winning_num_sets
+
+    @property
+    def set_num_games(self) -> int:
+        return self._set_num_games
+
+    @property
+    def set_tiebreak_to(self) -> int:
+        return self._set_tiebreak_to
+
+    @property
+    def match_tiebreak(self) -> bool:
+        return self._match_tiebreak
+
+    @property
+    def match_tiebreak_to(self) -> int:
+        return self._match_tiebreak_to
 
     @property
     def player1_sets(self) -> int:
@@ -394,9 +424,20 @@ class Match:
     def side(self) -> int:
         return self._set.game.side
 
-    @property
     def point_uuid(self) -> str:
         return f"{self.set_number}-{self.game_number}-{self.point_number}-{self.current_server}-{self.side}"
+
+    def get_initial_inputs(self) -> dict:
+        return {
+            'player1_name': self.player1_name,
+            'player2_name': self.player2_name,
+            'server': self.initial_server,
+            'match_best_of': self.match_best_of,
+            'set_num_games': self.set_num_games,
+            'set_tiebreak_to': self.set_tiebreak_to,
+            'match_tiebreak': self.match_tiebreak,
+            'match_tiebreak_to': self.match_tiebreak_to,
+        }
 
     def break_point(self) -> int:
         return self.set.game.break_point()
@@ -440,17 +481,17 @@ class Match:
         return self._check_win()
 
     def new_set(self) -> None:
-        if self._final_set_tiebreak and self.player1_sets == self._winning_num_sets - 1 \
+        if self._match_tiebreak and self.player1_sets == self._winning_num_sets - 1 \
                 and self.player2_sets == self._winning_num_sets - 1:
             self._set = TiebreakSet(
                 server=self.server,
-                tiebreak_to=self._set_tiebreak_to
+                tiebreak_to=self._match_tiebreak_to
             )
         else:
             self._set = RegularSet(
                 server=self.server,
                 num_games=self._set_num_games,
-                tiebreak_to=self._game_tiebreak_to
+                tiebreak_to=self._set_tiebreak_to
             )
 
     def add_point(self, winner: int) -> None or int:

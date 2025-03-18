@@ -135,9 +135,7 @@ def create_backend_df() -> pd.DataFrame:
             'final_shot_type',
             # 'final_shot_spin',
             # 'final_shot_target'
-            'meta_match_datetime',
-            'meta_player1_name',
-            'meta_player2_name',
+            'metadata',
         ]
     )
     return df
@@ -156,7 +154,7 @@ def add_ace(session_state: dict, serve_target: int, serve_type: int = ServeType.
 
     df.loc[len(df)] = [
         datetime.now(timezone.utc),
-        match.point_uuid,
+        match.point_uuid(),
         match.set_number,
         match.game_number,
         match.point_number,
@@ -178,9 +176,7 @@ def add_ace(session_state: dict, serve_target: int, serve_type: int = ServeType.
         FinalShot.WINNER.value,
         DEFAULT_VALUE,
         DEFAULT_VALUE,
-        session_state['match_datetime'],
-        session_state['player1_name'],
-        session_state['player2_name'],
+        session_state['match_metadata'],
     ]
 
 
@@ -195,7 +191,7 @@ def add_double_fault(session_state: dict) -> None:
 
     df.loc[len(df)] = [
         datetime.now(timezone.utc),
-        match.point_uuid,
+        match.point_uuid(),
         match.set_number,
         match.game_number,
         match.point_number,
@@ -217,9 +213,7 @@ def add_double_fault(session_state: dict) -> None:
         DEFAULT_VALUE,
         DEFAULT_VALUE,
         DEFAULT_VALUE,
-        session_state['match_datetime'],
-        session_state['player1_name'],
-        session_state['player2_name'],
+        session_state['match_metadata'],
     ]
 
 
@@ -237,7 +231,7 @@ def add_point(session_state: dict) -> None:
 
     df.loc[len(df)] = [
         datetime.now(timezone.utc),
-        match.point_uuid,
+        match.point_uuid(),
         match.set_number,
         match.game_number,
         match.point_number,
@@ -259,9 +253,7 @@ def add_point(session_state: dict) -> None:
         session_state['final_shot'],
         session_state['final_shot_hand'],
         session_state['final_shot_type'],
-        session_state['match_datetime'],
-        session_state['player1_name'],
-        session_state['player2_name'],
+        session_state['match_metadata'],
     ]
 
 
