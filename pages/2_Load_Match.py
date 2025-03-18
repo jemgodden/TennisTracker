@@ -17,7 +17,6 @@ if __name__ == "__main__":
         page_title="Load Match",
         page_icon=":floppy_disk:",
         layout='wide',
-        # initial_sidebar_state="collapsed",
     )
 
     st.title("Load a Previous Match :floppy_disk:")

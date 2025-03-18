@@ -17,7 +17,6 @@ if __name__ == "__main__":
         page_title="New Match",
         page_icon=":tennis:",
         layout='wide',
-        # initial_sidebar_state="collapsed",
     )
 
     st.title("Create a New Match :tennis:")

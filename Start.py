@@ -29,7 +29,6 @@ if __name__ == "__main__":
         page_title="Start",
         page_icon=":information_source:",
         layout='wide',
-        # initial_sidebar_state="collapsed",
     )
 
     st.title("Welcome! :wave:")
@@ -40,7 +39,7 @@ if __name__ == "__main__":
         st.header("About")
         st.write(
             "This application is intended to be used by amateur tennis players and coaches to track the score of a singles tennis match, and display some accompanying statistics and analysis of both players' actions during the match.  \n"
-            "The hope is that it can be used to identify strengths and weaknesses in a player's game and help giver areas to focus on or adapt during a match.  \n\n"
+            "The hope is that it can be used to identify strengths and weaknesses in a player's game and help give areas to focus on or adapt during a match.  \n\n"
             "It is worth noting that the data input for this application is not automated, so requires some manual input for each point from a spectator."
         )
 

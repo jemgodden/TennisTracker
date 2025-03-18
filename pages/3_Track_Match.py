@@ -19,7 +19,6 @@ if __name__ == "__main__":
         page_title="Track Match",
         page_icon=":memo:",
         layout='wide',
-        # initial_sidebar_state="collapsed",
     )
 
     st.title("Track Current Match :memo:")
