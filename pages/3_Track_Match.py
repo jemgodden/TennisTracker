@@ -105,9 +105,9 @@ if __name__ == "__main__":
                 key='serve_target',
             )
 
-            st.write("######")
+            st.subheader("Rally")
 
-            st.subheader("Net")
+            st.write("#### Net")
 
             net_form_left, net_form_middle, net_form_right = st.columns(3)
 
@@ -133,9 +133,7 @@ if __name__ == "__main__":
                 key='net_approach_type',
             )
 
-            st.write("######")
-
-            st.subheader("Rally")
+            st.write("#### Length")
 
             rally_length_map = {enum.value: format_enum_name(enum.name, True) for enum in RallyLength}
             rally_length = st.pills(
@@ -145,8 +143,6 @@ if __name__ == "__main__":
                 selection_mode="single",
                 key='rally_length',
             )
-
-            st.write("######")
 
             st.subheader("Point End")
 

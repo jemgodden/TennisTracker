@@ -51,7 +51,7 @@ class ServeTarget(Enum):
 
 class NetApproachType(Enum):
     AGGRESSIVE = auto()
-    FORCED = auto()
+    DEFENSIVE = auto()
 
 
 class RallyLength(Enum):
@@ -266,15 +266,20 @@ def add_point(session_state: dict) -> None:
 
 def add_player_data(player: int, match_data: pd.DataFrame) -> dict[str, pd.DataFrame]:
     data = {
+        'all_points': match_data,
         'points_won': match_data[(match_data.winner == player)],
         'points_lost': match_data[(match_data.winner == other_player(player))],
-        'match_points': match_data[(match_data.match_point == player)],
-        'set_points': match_data[(match_data.set_point == player)],
         'break_points': match_data[(match_data.break_point == player)],
+        'set_points': match_data[(match_data.set_point == player)],
+        'match_points': match_data[(match_data.match_point == player)],
         'serves': match_data[(match_data.server == player)],
         'returns': match_data[(match_data.server == other_player(player))],
-        'net_approach_points': match_data[(match_data.net_approach == True)],
+        'net_approach_points': match_data[(match_data.net_approach == True) & (match_data.first_net_approacher == player)],
     }
+
+    data['break_points_won'] = data['break_points'][(data['break_points'].winner == player)]
+    data['set_points_won'] = data['set_points'][(data['set_points'].winner == player)]
+    data['match_points_won'] = data['match_points'][(data['match_points'].winner == player)]
 
     data['aces'] = data['serves'][(data['serves'].serve == Serve.ACE.value)]
     data['first_serves'] = data['serves'][(data['serves'].serve.isin([Serve.ACE.value, Serve.FIRST_SERVE.value]))]
@@ -291,6 +296,6 @@ def add_player_data(player: int, match_data: pd.DataFrame) -> dict[str, pd.DataF
 
     data['final_shot'] = pd.concat([data['winners'], data['errors'], data['unforced_errors']])
 
-    data['net_approach_points_won'] = data['points_won'][(data['points_won'].net_approach == True)]
+    data['net_approach_points_won'] = data['net_approach_points'][(data['net_approach_points'].winner == player)]
 
     return data
