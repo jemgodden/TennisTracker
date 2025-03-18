@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
             st.session_state['match_data'] = loaded_match_data
             st.session_state['match'] = loaded_match
-            st.session_state['match_datetime'] = datetime.strptime(loaded_match_data['meta_datetime'].iloc[0], '%Y-%m-%d %H:%M:%S.%f%z')
+            st.session_state['match_datetime'] = datetime.strptime(loaded_match_data['meta_match_datetime'].iloc[0], '%Y-%m-%d %H:%M:%S.%f%z')
             st.session_state['player1_name'] = loaded_match_data['meta_player1_name'].iloc[0]
             st.session_state['player2_name'] = loaded_match_data['meta_player2_name'].iloc[0]
 
