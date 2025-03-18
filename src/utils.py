@@ -55,9 +55,9 @@ class NetApproachType(Enum):
 
 
 class RallyLength(Enum):
-    RL_0_1 = auto()
-    RL_2_4 = auto()
-    RL_5_8 = auto()
+    RL_0_2 = auto()
+    RL_3_5 = auto()
+    RL_6_8 = auto()
     RL_9_PLUS = auto()
 
 
@@ -75,6 +75,7 @@ class FinalShotHand(Enum):
 
 class FinalShotType(Enum):
     DRIVE = auto()
+    SLICE = auto()
     SMASH = auto()
     VOLLEY = auto()
     DROP_SHOT = auto()
