@@ -19,8 +19,8 @@ class MatchSections(Enum):
 
 class Players(Enum):
     NONE = 0
-    PLAYER_1 = auto()
-    PLAYER_2 = auto()
+    PLAYER_1 = 1
+    PLAYER_2 = 2
 
 
 class Side(Enum):
@@ -29,57 +29,70 @@ class Side(Enum):
 
 
 class Serve(Enum):
-    ACE = 0
-    FIRST_SERVE = 1
-    SECOND_SERVE = 2
-    DOUBLE_FAULT = 3
+    ACE = auto()
+    FIRST_SERVE = auto()
+    SECOND_SERVE = auto()
+    DOUBLE_FAULT = auto()
 
 
 class ServeType(Enum):
-    FLAT = 0
-    KICK = 1
-    SLICE = 2
-    UNDERARM = 3
+    FLAT = auto()
+    KICK = auto()
+    SLICE = auto()
+    UNDERARM = auto()
 
 
 class ServeTarget(Enum):
-    INSIDE = 0
-    BODY = 1
-    OUTSIDE = 2
-    SHORT = 3
+    INSIDE = auto()
+    BODY = auto()
+    OUTSIDE = auto()
+    SHORT = auto()
 
 
 class NetApproachType(Enum):
-    AGGRESSIVE = 0
-    FORCED = 1
+    AGGRESSIVE = auto()
+    FORCED = auto()
 
 
 class RallyLength(Enum):
-    RL_0_1 = 0
-    RL_2_4 = 1
-    RL_5_8 = 2
-    RL_9_PLUS = 3
+    RL_0_1 = auto()
+    RL_2_4 = auto()
+    RL_5_8 = auto()
+    RL_9_PLUS = auto()
 
 
 class FinalShot(Enum):
-    WINNER = 0
-    ERROR = 1
-    UNFORCED_ERROR = 2
+    WINNER = auto()
+    ERROR = auto()
+    UNFORCED_ERROR = auto()
 
 
 class FinalShotHand(Enum):
-    FOREHAND = 0
-    BACKHAND = 1
-    OTHER = 2
+    FOREHAND = auto()
+    BACKHAND = auto()
+    OTHER = auto()
 
 
 class FinalShotType(Enum):
-    DRIVE = 0
-    SMASH = 1
-    VOLLEY = 2
-    DROP_SHOT = 3
-    LOB = 4
-    OTHER = 5
+    DRIVE = auto()
+    SMASH = auto()
+    VOLLEY = auto()
+    DROP_SHOT = auto()
+    LOB = auto()
+    OTHER = auto()
+
+
+def format_enum_name(enum_name: str, rally_length: bool=False) -> str:
+    """
+    Formats the enum name to make it more human-readable.
+
+    :param enum_name: string value for enum name.
+    :param rally_length: boolean flag to indicate if enum is RallyLength, which requires different formatting.
+    :return: formatted string value for enum name.
+    """
+    if rally_length:
+        return enum_name[3:].replace("_PLUS", "+").replace("_", "-")
+    return " ".join([word[0]+word[1:].lower() for word in enum_name.split("_")])
 
 
 def other_player(input_player: int):

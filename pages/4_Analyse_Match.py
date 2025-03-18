@@ -8,6 +8,7 @@ import numpy as np
 from src.utils import *
 
 
+plt.style.use('dark_background')
 np.seterr(divide='ignore', invalid='ignore')
 
 
@@ -31,7 +32,7 @@ if __name__ == "__main__":
         st.header(f"Match: {st.session_state['player1_name']} vs {st.session_state['player2_name']}")
         st.subheader(f"Played: {st.session_state['match_datetime'].strftime('%d/%m/%Y %H:%M:%S')}")
 
-    with st.container(key="show_ata"):
+    with st.container(key="show_data"):
         st.write("######")
         if st.toggle("Show Data"):
             st.dataframe(st.session_state['match_data'])
@@ -180,7 +181,7 @@ if __name__ == "__main__":
                 serve_pie_ax.pie(
                     [serve_data[serve_data['serve'] == enum.value].shape[0] for enum in Serve],
                     explode=(0.1, 0.1, 0.1, 0.1),
-                    labels=("Ace", "First Serve", "Second Serve", "Double Fault"),
+                    labels=[format_enum_name(enum.name) for enum in Serve],
                     autopct='%1.1f%%',
                     shadow=True,
                     startangle=90,
@@ -195,11 +196,7 @@ if __name__ == "__main__":
                 serve_analysis_left.warning("There is no relevant match data to analyse.")
 
             try:
-                serve_map = {
-                    Serve.ACE.value: "Ace",
-                    Serve.FIRST_SERVE.value: "First Serve",
-                    Serve.SECOND_SERVE.value: "Second Serve",
-                }
+                serve_map = {enum.value: format_enum_name(enum.name) for enum in Serve}
                 serve_filter = serve_analysis_right.selectbox(
                     "Select Serve",
                     options=serve_map.keys(),
@@ -210,8 +207,8 @@ if __name__ == "__main__":
                 serve_hm_fig, serve_hm_ax = plt.subplots()
 
                 serve_hm_data = [[serve_data[(serve_data['serve'] == serve_filter) & (serve_data['serve_type'] == serve_type.value) & (serve_data['serve_target'] == serve_target.value)].shape[0] for serve_target in ServeTarget] for serve_type in ServeType]
-                serve_targets = ["Inside", "Body", "Outside", "Short"]
-                serve_types = ["Flat", "Kick", "Slice", "Underarm"]
+                serve_targets = [format_enum_name(enum.name) for enum in ServeTarget]
+                serve_types = [format_enum_name(enum.name) for enum in ServeType]
 
                 im = serve_hm_ax.imshow(
                     serve_hm_data,
@@ -327,7 +324,7 @@ if __name__ == "__main__":
                     'Returner': [net_returner_data[net_server_data.net_approach_type == enum.value].shape[0] for enum in NetApproachType],
                 }
 
-                net_x_labels = ("Aggressive", "Forced")
+                net_x_labels = [format_enum_name(enum.name) for enum in NetApproachType]
 
                 net_bar_fig, net_bar_ax = plt.subplots()
 
@@ -365,7 +362,7 @@ if __name__ == "__main__":
             rally_length_fig, rally_length_ax = plt.subplots()
 
             rally_length_ax.bar(
-                ("0-1", "2-4", "5-8", "9+"),
+                [format_enum_name(enum.name, True) for enum in RallyLength],
                 rally_length_data,
                 color=plt.cm.Set3.colors,
             )
@@ -402,20 +399,20 @@ if __name__ == "__main__":
             }
 
             try:
-                fs_x_labels = ("Winner", "Error", "Unforced Error")
+                fs_x_labels = [format_enum_name(enum.name) for enum in FinalShot]
 
                 fs_mbar_data = {
-                    'Forehand': [
+                    format_enum_name(FinalShotHand.FOREHAND.name): [
                         fs_winner_data[fs_winner_data['final_shot_hand'] == FinalShotHand.FOREHAND.value].shape[0],
                         fs_error_data[fs_error_data['final_shot_hand'] == FinalShotHand.FOREHAND.value].shape[0],
                         fs_unforced_error_data[fs_unforced_error_data['final_shot_hand'] == FinalShotHand.FOREHAND.value].shape[0],
                     ],
-                    'Backhand': [
+                    format_enum_name(FinalShotHand.BACKHAND.name): [
                         fs_winner_data[fs_winner_data['final_shot_hand'] == FinalShotHand.BACKHAND.value].shape[0],
                         fs_error_data[fs_error_data['final_shot_hand'] == FinalShotHand.BACKHAND.value].shape[0],
                         fs_unforced_error_data[fs_unforced_error_data['final_shot_hand'] == FinalShotHand.BACKHAND.value].shape[0],
                     ],
-                    'Other': [
+                    format_enum_name(FinalShotHand.OTHER.name): [
                         fs_winner_data[fs_winner_data['final_shot_hand'] == FinalShotHand.OTHER.value].shape[0],
                         fs_error_data[fs_error_data['final_shot_hand'] == FinalShotHand.OTHER.value].shape[0],
                         fs_unforced_error_data[fs_unforced_error_data['final_shot_hand'] == FinalShotHand.OTHER.value].shape[0],
@@ -446,11 +443,7 @@ if __name__ == "__main__":
                 fs_analysis_left.warning("There is no relevant match data to analyse.")
 
             try:
-                winerr_map = {
-                    FinalShot.WINNER.value: "Winner",
-                    FinalShot.ERROR.value: "Error",
-                    FinalShot.UNFORCED_ERROR.value: "Unforced Error",
-                }
+                winerr_map = {enum.value: format_enum_name(enum.name) for enum in FinalShot}
                 winerr_filter = fs_analysis_right.selectbox(
                     "Select Winner, Error, or Unforced Error",
                     options=winerr_map.keys(),
@@ -462,18 +455,11 @@ if __name__ == "__main__":
 
                 fs_sbar_fig, fs_sbar_ax = plt.subplots()
 
-                shot_types = (
-                    "Drive",
-                    "Smash",
-                    "Volley",
-                    "Drop Shot",
-                    "Lob",
-                    "Other",
-                )
+                shot_types = [format_enum_name(enum.name) for enum in FinalShotType]
                 fs_sbar_data = {
-                    "Forehand": [winerr_data[(winerr_data['final_shot_hand'] == FinalShotHand.FOREHAND.value) & (winerr_data['final_shot_type'] == enum.value)].shape[0] for enum in FinalShotType],
-                    "Backhand": [winerr_data[(winerr_data['final_shot_hand'] == FinalShotHand.BACKHAND.value) & (winerr_data['final_shot_type'] == enum.value)].shape[0] for enum in FinalShotType],
-                    "Other": [winerr_data[(winerr_data['final_shot_hand'] == FinalShotHand.OTHER.value) & (winerr_data['final_shot_type'] == enum.value)].shape[0] for enum in FinalShotType],
+                    format_enum_name(FinalShotHand.FOREHAND.name): [winerr_data[(winerr_data['final_shot_hand'] == FinalShotHand.FOREHAND.value) & (winerr_data['final_shot_type'] == enum.value)].shape[0] for enum in FinalShotType],
+                    format_enum_name(FinalShotHand.BACKHAND.name): [winerr_data[(winerr_data['final_shot_hand'] == FinalShotHand.BACKHAND.value) & (winerr_data['final_shot_type'] == enum.value)].shape[0] for enum in FinalShotType],
+                    format_enum_name(FinalShotHand.OTHER.name): [winerr_data[(winerr_data['final_shot_hand'] == FinalShotHand.OTHER.value) & (winerr_data['final_shot_type'] == enum.value)].shape[0] for enum in FinalShotType],
                 }
                 base = [0 for shot_type in shot_types]
 

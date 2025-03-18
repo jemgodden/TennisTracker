@@ -78,12 +78,7 @@ if __name__ == "__main__":
 
             serve_form_left, serve_form_middle, serve_form_right = st.columns(3)
 
-            serve_map = {
-                Serve.ACE.value: "Ace",
-                Serve.FIRST_SERVE.value: "First",
-                Serve.SECOND_SERVE.value: "Second",
-                Serve.DOUBLE_FAULT.value: "Double Fault",
-            }
+            serve_map = {enum.value: format_enum_name(enum.name) for enum in Serve}
             serve = serve_form_left.pills(
                 "Serve",
                 options=serve_map.keys(),
@@ -92,12 +87,7 @@ if __name__ == "__main__":
                 key='serve',
             )
 
-            serve_type_map = {
-                ServeType.FLAT.value: "Flat",
-                ServeType.KICK.value: "Kick",
-                ServeType.SLICE.value: "Slice",
-                ServeType.UNDERARM.value: "Underarm",
-            }
+            serve_type_map = {enum.value: format_enum_name(enum.name) for enum in ServeType}
             serve_type = serve_form_middle.pills(
                 "Serve Type",
                 options=serve_type_map.keys(),
@@ -106,12 +96,7 @@ if __name__ == "__main__":
                 key='serve_type',
             )
 
-            serve_target_map = {
-                ServeTarget.INSIDE.value: "Inside",
-                ServeTarget.BODY.value: "Body",
-                ServeTarget.OUTSIDE.value: "Outside",
-                ServeTarget.SHORT.value: "Short",
-            }
+            serve_target_map = {enum.value: format_enum_name(enum.name) for enum in ServeTarget}
             serve_target = serve_form_right.pills(
                 "Serve Target",
                 options=serve_target_map.keys(),
@@ -139,10 +124,7 @@ if __name__ == "__main__":
                 key='first_net_approacher',
             )
 
-            nat_approach_map = {
-                NetApproachType.AGGRESSIVE.value: "Aggressive",
-                NetApproachType.FORCED.value: "Forced",
-            }
+            nat_approach_map = {enum.value: format_enum_name(enum.name) for enum in NetApproachType}
             net_approach_type = net_form_right.pills(
                 "Net Approach Type",
                 options=nat_approach_map.keys(),
@@ -155,12 +137,7 @@ if __name__ == "__main__":
 
             st.subheader("Rally")
 
-            rally_length_map = {
-                RallyLength.RL_0_1.value: "0-1",
-                RallyLength.RL_2_4.value: "2-4",
-                RallyLength.RL_5_8.value: "5-8",
-                RallyLength.RL_9_PLUS.value: "9+",
-            }
+            rally_length_map = {enum.value: format_enum_name(enum.name, True) for enum in RallyLength}
             rally_length = st.pills(
                 "Rally Length",
                 options=rally_length_map.keys(),
@@ -175,11 +152,7 @@ if __name__ == "__main__":
 
             fs_form_left, fs_form_middle, fs_form_right = st.columns(3)
 
-            final_shot_map = {
-                FinalShot.WINNER.value: "Winner",
-                FinalShot.ERROR.value: "Error",
-                FinalShot.UNFORCED_ERROR.value: "Unforced Error",
-            }
+            final_shot_map = {enum.value: format_enum_name(enum.name) for enum in FinalShot}
             final_shot = fs_form_left.pills(
                 "Final Shot",
                 options=final_shot_map.keys(),
@@ -188,11 +161,7 @@ if __name__ == "__main__":
                 key='final_shot',
             )
 
-            final_shot_hand_map = {
-                FinalShotHand.FOREHAND.value: "Forehand",
-                FinalShotHand.BACKHAND.value: "Backhand",
-                FinalShotHand.OTHER.value: "Other",
-            }
+            final_shot_hand_map = {enum.value: format_enum_name(enum.name) for enum in FinalShotHand}
             final_shot_hand = fs_form_middle.pills(
                 "Final Shot Type",
                 options=final_shot_hand_map.keys(),
@@ -201,14 +170,7 @@ if __name__ == "__main__":
                 key='final_shot_hand',
             )
 
-            final_shot_type_map = {
-                FinalShotType.DRIVE.value: "Drive",
-                FinalShotType.VOLLEY.value: "Volley",
-                FinalShotType.SMASH.value: "Smash",
-                FinalShotType.DROP_SHOT.value: "Drop Shot",
-                FinalShotType.LOB.value: "Lob",
-                FinalShotType.OTHER.value: "Other",
-            }
+            final_shot_type_map = {enum.value: format_enum_name(enum.name) for enum in FinalShotType}
             final_shot_type = fs_form_right.pills(
                 "Final Shot Type",
                 options=final_shot_type_map.keys(),
