@@ -68,6 +68,40 @@ if __name__ == "__main__":
 
         st.caption("Note that loading a file will overwrite any previous information added in the 'New Match' page.  \nConsider saving the file first.")
 
+    with st.container(key="upload_example"):
+        st.header("Load Example File")
+
+        st.write(
+            "Clicking the below button will load an example file, which contains data for the 2025 Australian Open Men's Singles Final between Jannik Sinner and Alexander Zverev.  \n"
+            "This is meant as a way show the capabilities of the application without having to track a new match.")
+
+        if st.button("Load File"):
+            loaded_match_data = pd.read_csv("example/AO_Final-Jannik_Sinner_vs_Alexander_Zverev-20250126_083000.csv")
+
+            loaded_match_metadata = loaded_match_data['metadata'].apply(eval).iloc[0]
+
+            loaded_match = Match(
+                player1_name=loaded_match_metadata['player1_name'],
+                player2_name=loaded_match_metadata['player2_name'],
+                server=loaded_match_metadata['server'],
+                match_best_of=loaded_match_metadata['match_best_of'],
+                set_num_games=loaded_match_metadata['set_num_games'],
+                set_tiebreak_to=loaded_match_metadata['set_tiebreak_to'],
+                match_tiebreak=loaded_match_metadata['match_tiebreak'],
+                match_tiebreak_to=loaded_match_metadata['match_tiebreak_to']
+            )
+
+            # Add points to new match.
+            for _, row in loaded_match_data.iterrows():
+                loaded_match.add_point(row.winner)
+
+            st.session_state['match_data'] = loaded_match_data
+            st.session_state['match'] = loaded_match
+            st.session_state['match_metadata'] = loaded_match_metadata
+            st.session_state['match_datetime'] = datetime.strptime(loaded_match_metadata['datetime'], '%Y-%m-%d %H:%M:%S')
+            st.session_state['player1_name'] = loaded_match_metadata['player1_name']
+            st.session_state['player2_name'] = loaded_match_metadata['player2_name']
+
     with st.container(key="page_navigation"):
         st.write("###")
         st.divider()
