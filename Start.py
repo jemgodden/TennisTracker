@@ -16,6 +16,8 @@ if __name__ == "__main__":
     # This is the first page loaded, so variables should only be created on initial app load.
     if 'match' not in st.session_state:
         st.session_state['match'] = Match()
+    if 'match_winner' not in st.session_state:
+        st.session_state['match_winner'] = Players.NONE.value
     if 'match_data' not in st.session_state:
         st.session_state['match_data'] = create_backend_df()
     if 'player1_name' not in st.session_state:

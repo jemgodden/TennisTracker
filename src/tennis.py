@@ -429,6 +429,10 @@ class Match:
     def side(self) -> int:
         return self._set.game.side
 
+    @property
+    def match_winner(self) -> int:
+        return self._match_winner
+
     def point_uuid(self) -> str:
         return f"{self.set_number}-{self.game_number}-{self.point_number}-{self.current_server}-{self.side}"
 
@@ -505,7 +509,7 @@ class Match:
             raise ValueError(f"Winner value {winner} is invalid.")
 
         if self._match_won:
-            return self._match_winner
+            return self.match_winner
 
         set_winner, next_server, game_end = self.set.add_point(winner)
         self._point_number += 1

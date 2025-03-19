@@ -45,19 +45,19 @@ if __name__ == "__main__":
 
         left, middle, right = st.columns(3)
 
-        if left.button("Ace - Inside (Flat)"):
+        if left.button("Ace - Inside (Flat)", disabled=(st.session_state['match_winner'] in (Players.PLAYER_1.value, Players.PLAYER_2.value))):
             add_ace(st.session_state, ServeTarget.INSIDE.value)
-            st.session_state['match'].add_point(st.session_state['match'].current_server)
+            st.session_state['match_winner'] = st.session_state['match'].add_point(st.session_state['match'].current_server)
             st.rerun()
 
-        if middle.button("Ace - Outside (Flat)"):
+        if middle.button("Ace - Outside (Flat)", disabled=(st.session_state['match_winner'] in (Players.PLAYER_1.value, Players.PLAYER_2.value))):
             add_ace(st.session_state, ServeTarget.OUTSIDE.value)
-            st.session_state['match'].add_point(st.session_state['match'].current_server)
+            st.session_state['match_winner'] = st.session_state['match'].add_point(st.session_state['match'].current_server)
             st.rerun()
 
-        if right.button("Double Fault"):
+        if right.button("Double Fault", disabled=(st.session_state['match_winner'] in (Players.PLAYER_1.value, Players.PLAYER_2.value))):
             add_double_fault(st.session_state)
-            st.session_state['match'].add_point(other_player(st.session_state['match'].current_server))
+            st.session_state['match_winner'] = st.session_state['match'].add_point(other_player(st.session_state['match'].current_server))
             st.rerun()
 
         st.caption("Quick-press buttons to mark the point as an ace (on first serve) or double fault, without having to submit the point below.")
@@ -199,12 +199,12 @@ if __name__ == "__main__":
 
             st.caption("A winner must be selected in order to add the point.")
 
-            if st.form_submit_button('Add Point'):
+            if st.form_submit_button('Add Point', disabled=(st.session_state['match_winner'] in (Players.PLAYER_1.value, Players.PLAYER_2.value))):
                 if st.session_state['winner'] is None:
                     st.warning("No winner was selected so the point was not added. Please try again.")
                 else:
                     add_point(st.session_state)
-                    st.session_state['match'].add_point(winner)
+                    st.session_state['match_winner'] = st.session_state['match'].add_point(winner)
                     st.rerun()
 
     with st.container(key="save_data"):

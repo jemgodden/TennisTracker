@@ -98,6 +98,7 @@ if __name__ == "__main__":
                     match_tiebreak_to=match_tiebreak_to
                 )
                 st.session_state['match'] = new_match
+                st.session_state['match_winner'] = Players.NONE.value
                 st.session_state['match_metadata'] = new_match.get_initial_inputs()
                 st.session_state['match_metadata']['datetime'] = st.session_state['match_datetime'].strftime('%Y-%m-%d %H:%M:%S')
                 st.session_state['match_data'] = create_backend_df()
