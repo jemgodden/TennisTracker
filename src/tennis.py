@@ -204,7 +204,7 @@ class Set(ABC):
     def _check_win(self) -> int:
         pass
 
-    def add_game(self, winner: int) -> int:
+    def _add_game(self, winner: int) -> int:
         if winner == Players.PLAYER_1.value:
             self._add_player1_game()
         elif winner == Players.PLAYER_2.value:
@@ -216,15 +216,15 @@ class Set(ABC):
         return self._check_win()
 
     @abstractmethod
-    def new_game(self) -> None:
+    def _new_game(self) -> None:
         pass
 
     def add_point(self, winner: int) -> tuple[None or int, int, bool]:
         game_winner = self._game.add_point(winner)
         if game_winner:
-            set_winner = self.add_game(game_winner)
+            set_winner = self._add_game(game_winner)
             if set_winner == Players.NONE.value:
-                self.new_game()
+                self._new_game()
             return set_winner, self.server, True
         return None, self.server, False
 
@@ -257,7 +257,7 @@ class RegularSet(Set):
             return Players.PLAYER_2.value
         return Players.NONE.value
 
-    def new_game(self) -> None:
+    def _new_game(self) -> None:
         if self.player1_games == self._num_games and self.player2_games == self._num_games:
             self._game = TiebreakGame(
                 server=self.server,
@@ -294,7 +294,7 @@ class TiebreakSet(Set):
             return Players.PLAYER_2.value
         return Players.NONE.value
 
-    def new_game(self) -> None:
+    def _new_game(self) -> None:
         pass
 
     def get_score(self) -> dict[str, tuple[str, str]]:
@@ -338,6 +338,11 @@ class Match:
         self._set_number: int = 1
         self._game_number: int = 1
         self._point_number: int = 1
+
+        self._set_score_history: list[tuple[int, int]] = []
+
+        self._match_won: bool = False
+        self._match_winner: int = Players.NONE.value
 
         if match_best_of == 1 and match_tiebreak:
             self._set: Set = TiebreakSet(
@@ -470,7 +475,7 @@ class Match:
             return Players.PLAYER_2.value
         return Players.NONE.value
 
-    def add_set(self, winner: int) -> int:
+    def _add_set(self, winner: int) -> int:
         if winner == Players.PLAYER_1.value:
             self._add_player1_set()
         elif winner == Players.PLAYER_2.value:
@@ -480,7 +485,8 @@ class Match:
 
         return self._check_win()
 
-    def new_set(self) -> None:
+    def _new_set(self) -> None:
+        self._set_number += 1
         if self._match_tiebreak and self.player1_sets == self._winning_num_sets - 1 \
                 and self.player2_sets == self._winning_num_sets - 1:
             self._set = TiebreakSet(
@@ -494,9 +500,12 @@ class Match:
                 tiebreak_to=self._set_tiebreak_to
             )
 
-    def add_point(self, winner: int) -> None or int:
+    def add_point(self, winner: int) -> int:
         if winner not in [Players.PLAYER_1.value, Players.PLAYER_2.value]:
             raise ValueError(f"Winner value {winner} is invalid.")
+
+        if self._match_won:
+            return self._match_winner
 
         set_winner, next_server, game_end = self.set.add_point(winner)
         self._point_number += 1
@@ -505,16 +514,19 @@ class Match:
         if game_end:
             self._game_number += 1
         if set_winner:
-            match_winner = self.add_set(set_winner)
-            if match_winner == Players.NONE.value:
-                self._set_number += 1
-                self.new_set()
+            match_winner = self._add_set(set_winner)
+            self._set_score_history.append((self._set.player1_games, self._set.player2_games))
+            self._new_set()
+            if match_winner in (Players.PLAYER_1.value, Players.PLAYER_2.value):
+                self._match_won = True
+                self._match_winner = match_winner
             return match_winner
-        return None
+        return Players.NONE.value
 
     def get_score(self) -> dict[str, tuple[str, str]]:
         scores = self._set.get_score()
         return {
             **scores,
-            MatchSections.SETS.value: (str(self.player1_sets), str(self.player2_sets))
+            MatchSections.SETS.value: (str(self.player1_sets), str(self.player2_sets)),
+            # "set_history": self._set_score_history
         }
