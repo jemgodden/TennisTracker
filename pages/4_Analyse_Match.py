@@ -31,11 +31,11 @@ if __name__ == "__main__":
         st.header(f"Match: {st.session_state['player1_name']} vs {st.session_state['player2_name']}")
         st.subheader(f"Played: {st.session_state['match_datetime'].strftime('%d/%m/%Y %H:%M:%S')}")
 
-    with st.container(key="show_data"):
-        st.write("######")
-        if st.toggle("Show Data"):
-            st.dataframe(st.session_state['match_data'])
-        st.caption("Only intended for developer use.")
+    # with st.container(key="show_data"):
+    #     st.write("######")
+    #     if st.toggle("Show Data"):
+    #         st.dataframe(st.session_state['match_data'])
+    #     st.caption("Only intended for developer use.")
 
     if st.session_state['match_data'].empty:
         st.warning("There is no match data to analyse.")
