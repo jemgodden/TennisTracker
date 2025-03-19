@@ -45,12 +45,12 @@ if __name__ == "__main__":
 
         left, middle, right = st.columns(3)
 
-        if left.button("Ace - Inside"):
+        if left.button("Ace - Inside (Flat)"):
             add_ace(st.session_state, ServeTarget.INSIDE.value)
             st.session_state['match'].add_point(st.session_state['match'].current_server)
             st.rerun()
 
-        if middle.button("Ace - Outside"):
+        if middle.button("Ace - Outside (Flat)"):
             add_ace(st.session_state, ServeTarget.OUTSIDE.value)
             st.session_state['match'].add_point(st.session_state['match'].current_server)
             st.rerun()
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             st.session_state['match'].add_point(other_player(st.session_state['match'].current_server))
             st.rerun()
 
-        st.caption("Quick-press buttons to mark the point as an ace (assuming serve type is flat) or double fault, without having to submit the point below.")
+        st.caption("Quick-press buttons to mark the point as an ace (on first serve) or double fault, without having to submit the point below.")
 
         with st.form(
                 "Point Information",
@@ -84,6 +84,7 @@ if __name__ == "__main__":
                 format_func=lambda val: serve_map[val],
                 selection_mode="single",
                 key='serve',
+                default=Serve.FIRST_SERVE.value,
             )
 
             serve_type_map = {enum.value: format_enum_name(enum.name) for enum in ServeType}
@@ -211,8 +212,10 @@ if __name__ == "__main__":
 
         output_file_name = st.text_input(
             "Output File Name",
-            value=f"{st.session_state['match'].player1_name.replace(' ', '_')}_vs_{st.session_state['match'].player2_name.replace(' ', '_')}-{datetime.now().strftime('%d%m%Y_%H:%M:%S')}"
+            value=f"{st.session_state['match'].player1_name.replace(' ', '_')}_vs_{st.session_state['match'].player2_name.replace(' ', '_')}-{st.session_state['match_datetime'].strftime('%Y-%m-%d_%H:%M:%S')}"
         )
+
+        st.caption("Press enter in above text box to ensure the file name is saved.")
 
         st.download_button(
             label="Download Match Data to CSV",
