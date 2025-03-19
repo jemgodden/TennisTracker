@@ -8,6 +8,6 @@ Points can be entered into the application as the match progresses, and summary 
 
 ## Usage
 
-This application will be deployed publicly on Streamlit Community Cloud for users to use. 
+This application is deployed publicly on Streamlit Community Cloud for users to use. 
 
-The link will be added here once it is deployed.
+You can find it here: https://tennis-tracker.streamlit.app
