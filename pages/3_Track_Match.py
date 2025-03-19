@@ -212,7 +212,7 @@ if __name__ == "__main__":
 
         output_file_name = st.text_input(
             "Output File Name",
-            value=f"{st.session_state['match'].player1_name.replace(' ', '_')}_vs_{st.session_state['match'].player2_name.replace(' ', '_')}-{st.session_state['match_datetime'].strftime('%Y_%m_%d_%H_%M_%S')}"
+            value=f"{st.session_state['match'].player1_name.replace(' ', '_')}_vs_{st.session_state['match'].player2_name.replace(' ', '_')}-{st.session_state['match_datetime'].strftime('%Y%m%d_%H%M%S')}"
         )
 
         st.caption("Press enter in above text box to ensure the file name is saved.")
