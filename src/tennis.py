@@ -253,7 +253,7 @@ class RegularSet(Set):
     def _check_win(self) -> int:
         if (self.player1_games == self._num_games and self.game_difference > 1) or (self.player1_games == self._num_games + 1):
             return Players.PLAYER_1.value
-        elif (self.player2_games == self._num_games and self.game_difference < -1) or (self.player2_games == self._num_games + 1):
+        elif (self.player2_games == self._num_games and self.game_difference > 1) or (self.player2_games == self._num_games + 1):
             return Players.PLAYER_2.value
         return Players.NONE.value
 
